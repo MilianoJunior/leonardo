@@ -1,19 +1,19 @@
-
-
-
-
 '''
+Nome: Miliano Fernandes de Oliveira Junior
+Data início: 06/05/2024
+Data atualização: 06/05/2024
+Descrição: Este é um aplicativo para monitorar e persisitir as atividades de crianças autistas.
+O aplicativo tem o objetivo de gerar informações através de gráficos e relatórios que auxiliem os pais e profissionais a entenderem o comportamento e evolução da criança.
+'''
+import time
 import streamlit as st
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import altair as alt
-from datetime import datetime
-
-import plotly.graph_objs as go
-from datetime import datetime, timedelta
-
+from libs.componentes import generate_example_data, heatmap, timeline
+from libs.funcoes import get_idade, import_dados, salvar_dados, generate_data
 
 
 st.set_page_config(
@@ -28,97 +28,134 @@ st.set_page_config(
     }
 )
 
-st.title("Leonardo Carus de Oliveira")
+col1, col2 = st.columns([.3, .7])
 
-st.write("Aqui você encontra informações sobre o Leonardo Carus de Oliveira. Tem o objetivo de monitorar as atividades do Leo e "
+with col1:
+    st.subheader("Leonardo Carus de Oliveira")
+
+    st.divider()
+
+    st.write("Aqui você encontra informações sobre o Leonardo Carus de Oliveira. Tem o objetivo de monitorar as atividades do Leo e "
          "através de gráficos e relatórios, apresentar informações relevantes sobre a sua evolução no autismo.")
+
+    st.caption('Idade: ' + get_idade(ano_nascimento=2018, mes_nascimento=6, dia_nascimento=2))
+    st.caption('Peso: 21 kg')
+    st.caption('Altura: 1,10 m')
+
 # Função para gerar dados de contribuição de exemplo
-def generate_example_data(year=2024):
-    # gerando uma data para cada dia do ano
-    numdays = 365 + (1 if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0) else 0)  # account for leap year
-    base = datetime(year, 1, 1)
-    date_list = [base + timedelta(days=x) for x in range(numdays)]
+with col2:
 
-    # gerando um número aleatório de contribuições para cada dia
-    contributions = np.random.randint(0, 10, size=numdays)
+    # Gerando os dados de exemplo
+    dates, contribs = generate_example_data()
+    df, datas, contribuicoes = generate_data()
 
-    return date_list, contributions
+    # Criar um gráfico de calor para visualizar as contribuições
+    fig = heatmap(datas, contribuicoes)
+
+    # Exibir o gráfico de calor no Streamlit
+    st.plotly_chart(fig, use_container_width=True)
+
+st.subheader("Registro de atividades do Leonardo")
+col11, col22, col33 = st.columns([.33, .33, .33])
+
+with col11:
+    # selecionar as atividades
+    atividade = st.multiselect("Selecione as atividades", ["Reação","Interação","Brincar","Dentista","Estudar", "Comer", "Dormir", "Tomar banho"], default=["Brincar"])
+with col22:
+    # selecionar a data
+    date = st.date_input("Data da atividade", value=pd.to_datetime('today'))
+
+with col33:
+    arquivo = uploaded_file = st.file_uploader("Anexar arquivo")
 
 
-# Gerando os dados de exemplo
-dates, contribs = generate_example_data()
+with st.container(height=250):
+    # escrever uma observação
+    texto = st.text_area("Observação", "Escreva aqui suas observações sobre a atividade")
+    # with col32:
+    btn_salvar = st.button("Salvar atividade")
 
-# Mapeamento de datas para eixos x (semana do ano) e y (dia da semana)
-week_of_year = [date.isocalendar()[1] for date in dates]
-day_of_week = [date.weekday() for date in dates]  # Monday is 0 and Sunday is 6
+    # styles
+    styles = {
+        'Reação': "background-color: yellow; color: black",
+        'Interação': "background-color: orange; color: white",
+        'Brincar': "background-color: blue; color: white",
+        'Estudar': "background-color: green; color: white",
+        'Comer': "background-color: red; color: white",
+        'Dormir': "background-color: purple; color: white",
+        'Tomar banho': "background-color: orange; color: white"
+    }
 
-# Criar um calendário de contribuições usando Heatmap
-heatmap = go.Heatmap(
-    x=week_of_year,
-    y=day_of_week,
-    z=contribs,
-    type='heatmap',
-    colorscale='Greens'
-)
+    if btn_salvar:
+        data = {
+            'start':date.strftime('%Y-%m-%d %H:%M:%S'),
+            'content':texto,
+            'group':atividade[0],
+            'style':styles.get(atividade[0], "color: red; background-color: pink;")
 
-# Criar a linha do tempo de atividades usando Bar
-activity_data = {
-    'MilanoJunior/leonardo': {'commits': 3, 'date_created': '2024-04-01'},
-    'MilanoJunior/estudos_estatisticos': {'commits': 2, 'date_created': '2024-04-02'}
-}
+        }
+        df = salvar_dados(data=data)
+        df, datas, contribuicoes = generate_data()
+        if df.empty:
+            st.success("Atividade salva com sucesso!")
+            time.sleep(2)
+            st.rerun()
+        else:
+            st.error("Erro ao salvar a atividade!")
+            time.sleep(2)
+            st.rerun()
+        for i in range(len(df)):
+            st.write(str(df.iloc[i]))
 
-bar = go.Bar(
-    x=[repo_data['commits'] for repo_data in activity_data.values()],
-    y=list(activity_data.keys()),
-    orientation='h'
-)
+# inserir timeline
+with st.container():
+    st.subheader("Timeline de atividades")
+    timeline(df)
 
-# Exibir o gráfico de calor no Streamlit
-st.plotly_chart(go.Figure(data=[heatmap]), use_container_width=True)
 
-# Exibir a linha do tempo de atividades no Streamlit
-st.plotly_chart(go.Figure(data=[bar]), use_container_width=True)
 
-# # Simulando dados de exemplo para o calendário de contribuições
-# contribs = np.random.randint(0, 5, (365,)) # 365 dias no ano, número de contribuições por dia
-# dates = [np.datetime64(datetime(2024, 1, 1)) + np.timedelta64(i, 'D') for i in range(365)]
-# # Adicionando zeros ao final do array para torná-lo divisível por 7
-# contribs_padded = np.pad(contribs, (0, 7 - len(contribs) % 7), mode='constant')
+
+
+
+# # Mapeamento de datas para eixos x (semana do ano) e y (dia da semana)
+# week_of_year = [date.isocalendar()[1] for date in dates]
+# day_of_week = [date.weekday() for date in dates]  # Monday is 0 and Sunday is 6
 #
-# # Agora o reshape pode ser realizado sem erros
-# contribs_calendar = np.reshape(contribs_padded, (-1, 7)) # 7 dias na semana
-#
-# # Criar o gráfico de calor para o calendário
-# fig, ax = plt.subplots()
-# ax.imshow(contribs_calendar, cmap='Greens')
+# # Criar um calendário de contribuições usando Heatmap
+# heatmap = go.Heatmap(
+#     x=week_of_year,
+#     y=day_of_week,
+#     z=contribs,
+#     type='heatmap',
+#     colorscale='Greens'
+# )
 
-# Ajustar os detalhes do gráfico como títulos, eixos, etc.
-# ...
-
-# # Exibir o calendário de contribuições no Streamlit
-# st.pyplot(fig)
-#
-# # Simulando dados de exemplo para a linha do tempo de atividades
-# activities = {
-#     'MilanoJunior/leonardo': 3,
-#     'MilanoJunior/estudos_estatisticos': 2,
+# # Criar a linha do tempo de atividades usando Bar
+# activity_data = {
+#     'MilanoJunior/leonardo': {'commits': 3, 'date_created': '2024-04-01'},
+#     'MilanoJunior/estudos_estatisticos': {'commits': 2, 'date_created': '2024-04-02'}
 # }
 #
-# # Criar a linha do tempo de atividades
-# fig, ax = plt.subplots()
-# for i, (repo, commits) in enumerate(activities.items()):
-#     ax.broken_barh([(0, commits)], (i-0.4, 0.8), facecolors='tab:green')
+# bar = go.Bar(
+#     x=[repo_data['commits'] for repo_data in activity_data.values()],
+#     y=list(activity_data.keys()),
+#     orientation='h'
+# )
+#
+#
+#
+# # Exibir a linha do tempo de atividades no Streamlit
+# st.plotly_chart(go.Figure(data=[bar]), use_container_width=True)
+#
+#
+#
+#
+# prompt = st.chat_input("Say something")
+# if prompt:
+#     st.write(f"User has sent the following prompt: {prompt}")
 
-# Ajustar os detalhes do gráfico como títulos, eixos, etc.
-# ...
+# if '__name__' == '__main__':
 
-# Exibir a linha do tempo no Streamlit
-# st.pyplot(fig)
-
-
-prompt = st.chat_input("Say something")
-if prompt:
-    st.write(f"User has sent the following prompt: {prompt}")
 
 # chart_data = pd.DataFrame(np.random.randn(20, 3), columns=["a", "b", "c"])
 #
@@ -130,6 +167,143 @@ if prompt:
 #
 # st.altair_chart(c, use_container_width=True)
 
-'''
+
+
+
+
+
+# import pyuac
+#
+# def main():
+#     print("Executando como administrador.")
+#     # Seu código aqui
+#
+# if __name__ == "__main__":
+#     if not pyuac.isUserAdmin():
+#         print("Reiniciando como administrador!")
+#         pyuac.runAsAdmin()
+#     else:
+#         main()
+
+
+
+
+#
+# from pynput import mouse
+# import pyautogui
+#
+# # Sua função para lidar com o clique do botão direito do mouse
+# def on_click(x, y, button, pressed):
+#     if button == mouse.Button.right and pressed:
+#         # Digite suas credenciais quando o botão direito do mouse for clicado
+#         pyautogui.write('seu_usuario')
+#         pyautogui.press('tab')  # pressione a tecla Tab para ir para o campo da senha
+#         pyautogui.write('sua_senha')
+#         pyautogui.press('enter')  # pressione Enter para enviar o formulário
+#
+# # Inicie o ouvinte do mouse
+# with mouse.Listener(on_click=on_click) as listener:
+#     listener.join()
+#
+#
+# Test-LocalConnection -UserName tecnico -WordList top.txt
+#
+# Start-Process -FilePath "C:\Program Files\Google\Chrome\Application\chrome.exe" -ArgumentList "https://www.google.com" -verb RunAs -PassThru
+#
+#
+
+
+# import time
+# import pygetwindow as gw
+
+#
+# tempo_espera = 2
+# cont = 0
+# janelas = []
+#
+# while True:
+#     # Lista todas as janelas abertas
+#     todas_janelas = gw.getAllTitles()
+#
+#     time.sleep(tempo_espera)
+#     cont += 1
+#     # Imprime o nome de todas as janelas
+#     for i, janela in enumerate(todas_janelas):
+#
+#         if not janela in janelas:
+#             print(i, janela)
+#             janelas.append(janela)
+#         # print(i, janela)
+#
+#     if  cont > 10:
+#         break
+#
+# print(janelas)
+# # Lista todas as janelas abertas
+# todas_janelas = gw.getAllTitles()
+# janelas = []
+# # Imprime o nome de todas as janelas
+# for i, janela in enumerate(todas_janelas):
+#     janelas.append(janela)
+#     if not janela in janelas:
+#         print(i, janela)
+#     # print(i, janela)
+#
+# # Tempo para o script esperar antes de começar (em segundos)
+#
+#
+# # Nome da janela que você quer fechar
+# nome_janela = 'Sistema e Segurança'
+
+
+
+# # Encontra a janela
+# janela = pyautogui.getWindowsWithTitle(nome_janela)[0]
+#
+# print(janela)
+#
+# # Fecha a janela
+# janela.close()
+
+# '''
+# import os
+#
+# '''
+# Pode implementar a estrutura de pastas e arquivos conforme abaixo:
+#
+# projeto/
+#     libs/
+#         elementos_graficos.py
+#         funcoes_processamento.py
+#     main.py
+#
+# '''
+#
+# # importar bibliotecas do python
+# import os
+#
+# # importar as suas bibliotecas ou módulos
+# from libs.elementos_graficos import *
+# from libs.funcoes_processamento import calcular_media, calcular_soma
+#
+# # pasta absoluta do projeto
+# path_absoluta = os.getcwd()
+# print(path_absoluta)
+# # pasta do projeto
+#
+# var1 = 10
+# var2 = 20
+#
+# # calcular a média
+# media = calcular_media(var1, var2)
+# print(f'A média é: {media}')
+#
+# # calcular a soma
+# soma = calcular_soma(var1, var2)
+# print(f'A soma é: {soma}')
+#
+# # criar um gráfico de barras
+# criar_grafico_barras([10, 20, 30], ['A', 'B', 'C'], 'Gráfico de Barras', 'Eixo X', 'Eixo Y')
+# '''
 
 
