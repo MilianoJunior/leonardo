@@ -60,7 +60,7 @@ col11, col22, col33 = st.columns([.33, .33, .33])
 
 with col11:
     # selecionar as atividades
-    atividade = st.multiselect("Selecione as atividades", ["Reação","Interação","Brincar","Dentista","Estudar", "Comer", "Dormir", "Tomar banho"], default=["Brincar"])
+    atividade = st.selectbox("Selecione as atividades", ["Alimentação","Atividade escola","Briga na escola","Medico","Reação","Interação","Brincar","Dentista","Estudar", "Comer", "Dormir", "Tomar banho"], default=["Brincar"])
 with col22:
     # selecionar a data
     date = st.date_input("Data da atividade", value=pd.to_datetime('today'))
@@ -77,13 +77,17 @@ with st.container(height=250):
 
     # styles
     styles = {
-        'Reação': "background-color: yellow; color: black",
-        'Interação': "background-color: orange; color: white",
-        'Brincar': "background-color: blue; color: white",
-        'Estudar': "background-color: green; color: white",
-        'Comer': "background-color: red; color: white",
-        'Dormir': "background-color: purple; color: white",
-        'Tomar banho': "background-color: orange; color: white"
+        "Alimentação": "background-color: #008000; color: black",  # Verde
+        "Atividade escola": "background-color: #0000FF; color: white",  # Azul
+        "Briga na escola": "background-color: #FF0000; color: white",  # Vermelho
+        "Medico": "background-color: #800080; color: white",  # Roxo
+        'Reação': "background-color: #FFFF00; color: black",  # Amarelo
+        'Interação': "background-color: #FFA500; color: black",  # Laranja
+        'Brincar': "background-color: #00FFFF; color: black",  # Ciano
+        'Estudar': "background-color: #008080; color: white",  # Verde-azulado
+        'Comer': "background-color: #FF00FF; color: black",  # Magenta
+        'Dormir': "background-color: #000080; color: white",  # Azul marinho
+        'Tomar banho': "background-color: #808000; color: white"  # Oliva
     }
 
     if btn_salvar:
