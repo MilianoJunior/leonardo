@@ -60,7 +60,7 @@ col11, col22, col33 = st.columns([.33, .33, .33])
 
 with col11:
     # selecionar as atividades
-    atividade = st.selectbox("Selecione as atividades", ["Alimentação","Atividade escola","Briga na escola","Medico","Reação","Interação","Brincar","Dentista","Estudar", "Comer", "Dormir", "Tomar banho"], default=["Brincar"])
+    atividade = st.selectbox("Selecione as atividades", ["Alimentação","Atividade escola","Briga na escola","Medico","Reação","Interação","Brincar","Dentista","Estudar", "Comer", "Dormir", "Tomar banho"], index=0)
 with col22:
     # selecionar a data
     date = st.date_input("Data da atividade", value=pd.to_datetime('today'))
@@ -94,8 +94,8 @@ with st.container(height=250):
         data = {
             'start':date.strftime('%Y-%m-%d %H:%M:%S'),
             'content':texto,
-            'group':atividade[0],
-            'style':styles.get(atividade[0], "color: red; background-color: pink;")
+            'group':atividade,
+            'style':styles.get(atividade, "color: red; background-color: pink;")
 
         }
         df = salvar_dados(data=data)
