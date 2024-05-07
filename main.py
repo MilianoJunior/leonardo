@@ -17,14 +17,11 @@ from libs.funcoes import get_idade, import_dados, salvar_dados, generate_data
 
 
 st.set_page_config(
-    page_title="Ex-stream-ly Cool App",
+    page_title="Leo App",
     page_icon="🧊",
     layout="wide",
     initial_sidebar_state="auto",
     menu_items={
-        'Get Help': 'https://www.extremelycoolapp.com/help',
-        'Report a bug': "https://www.extremelycoolapp.com/bug",
-        'About': "# This is a header. This is an *extremely* cool app!"
     }
 )
 
