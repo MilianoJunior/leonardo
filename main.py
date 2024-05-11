@@ -98,11 +98,11 @@ with st.container(height=250):
         df = salvar_dados(data=data)
         df, datas, contribuicoes = generate_data()
         if df.empty:
-            st.success("Atividade salva com sucesso!")
+            st.error("Erro ao salvar a atividade!")
             time.sleep(2)
             st.rerun()
         else:
-            st.error("Erro ao salvar a atividade!")
+            st.success("Atividade salva com sucesso!")
             time.sleep(2)
             st.rerun()
         for i in range(len(df)):

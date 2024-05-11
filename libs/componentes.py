@@ -46,8 +46,6 @@ def heatmap(dates, contribs):
         ),
         yaxis=dict(
             title='Dia da semana',
-            # tickvals=y_labels,
-            # ticktext=list(week_mapping.values())
         ),
     )
 
@@ -63,20 +61,8 @@ def heatmap(dates, contribs):
     return go.Figure(data=[heatmap], layout=layout)
 
 def timeline(df):
-    items = [
-        {"id": 1, "content": "2022-10-20", "start": "2022-10-20"},
-        {"id": 2, "content": "2022-10-09", "start": "2022-10-09"},
-        {"id": 3, "content": "2022-10-18", "start": "2022-10-18"},
-        {"id": 4, "content": "2022-10-16", "start": "2022-10-16"},
-        {"id": 5, "content": "2022-10-25", "start": "2022-10-25"},
-        {"id": 6, "content": "2022-10-27", "start": "2022-10-27"},
-    ]
-
-    print(df)
     df['start'] = df['start'].apply(lambda x: x.strftime('%Y-%m-%d %H:%M:%S'))
     items = [df.iloc[i].to_dict() for i in range(len(df))]
-    print(items)
-
-    timeline = st_timeline(items, groups=[], options={}, height="300px")
-    st.subheader("Selected item")
+    timeline = st_timeline(items, groups=[], options={}, height="500px")
+    st.write("Item Selecionado:")
     st.write(timeline)

@@ -66,10 +66,10 @@ def salvar_dados(data: dict, nome_arquivo='data.csv'):
         df = import_dados(nome_arquivo)
 
         # adicionar os novos dados
-        dts = [len(df)] + list(data.values())
+        dts = [len(df) + 1] + list(data.values())
 
         # adicionar os novos dados
-        df.loc[len(df)] = dts
+        df.loc[len(df)+1] = dts
 
         # salvar os dados
         df.to_csv(path, index=False)
