@@ -4,3 +4,5 @@ id,start,content,group,style
 3,2024-05-04 00:00:00,Foi ao dentista,Dentista,color: red; background-color: pink;
 4,2024-05-08 00:00:00,Ficou sem desenho por que deu risada quando chamado sua atenção a pedido da bruna,Reação,background-color: #FFFF00; color: black
 5,2024-05-07 00:00:00,"não mistura comida, e só linguiça",Alimentação,background-color: #008000; color: black
+6,2024-05-18 00:00:00,"Participamos de um casamento, se comportou bem, ficou incomodado com o barulho de musica.",Interação,background-color: #FFA500; color: black
+7,2024-05-21 00:00:00,Pede ao pai para ler nas ultimas duas semanas as mesmas páginas do livro a cabana.,Estudar,background-color: #008080; color: white

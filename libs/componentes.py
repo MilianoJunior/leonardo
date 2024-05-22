@@ -61,8 +61,39 @@ def heatmap(dates, contribs):
     return go.Figure(data=[heatmap], layout=layout)
 
 def timeline(df):
+    '''Exibir uma linha do tempo de atividades.'''
+
+    # Primeiro, certifique-se de que a coluna 'start' esteja no formato correto de data
     df['start'] = df['start'].apply(lambda x: x.strftime('%Y-%m-%d %H:%M:%S'))
+
+   # Crie um novo dataframe que conta as ocorrências de cada data
     items = [df.iloc[i].to_dict() for i in range(len(df))]
+
+    # Formatar os itens
+    # Formatar os itens
+    for item in items:
+        # Dividir a string em pedaços de 10 caracteres
+        # chunks = [item['content'][i:i + 10] for i in range(0, len(item['content']), 10)]
+        chunks = item['content'].split(' ')
+        pairs = []
+        for i in range(0, len(chunks), 2):
+            if i + 1 < len(chunks):
+                pairs.append(chunks[i] + ' ' + chunks[i + 1])
+            else:
+                pairs.append(chunks[i])
+
+        # Juntar os pedaços com a tag <br>
+        content_with_breaks = '<br>'.join(pairs)
+
+        # Contar a quantidade de quebras de linha
+        line_count = len(pairs) + 1.5 # +1 para a primeira linha
+
+        # Definir a altura da div com base na quantidade de linhas
+        height = line_count * 20  # Supondo que cada linha tenha 20px de altura
+
+        item['content'] = f"<div style='width:150px; height:{height}px; word-wrap: break-word;'>{content_with_breaks}</div>"
+    # Exibir a linha do tempo de atividades no Streamlit
     timeline = st_timeline(items, groups=[], options={}, height="500px")
+
     st.write("Item Selecionado:")
     st.write(timeline)
