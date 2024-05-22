@@ -1,2 +1,9 @@
-[theme]
-base = "light"
+[server]
+enableCORS = false
+enableXsrfProtection = false
+
+[browser]
+gatherUsageStats = false
+
+[global]
+sharingMode = "off"
