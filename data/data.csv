@@ -6,3 +6,7 @@ id,start,content,group,style
 5,2024-05-07 00:00:00,"não mistura comida, e só linguiça",Alimentação,background-color: #008000; color: black
 6,2024-05-18 00:00:00,"Participamos de um casamento, se comportou bem, ficou incomodado com o barulho de musica.",Interação,background-color: #FFA500; color: black
 7,2024-05-21 00:00:00,Pede ao pai para ler nas ultimas duas semanas as mesmas páginas do livro a cabana.,Estudar,background-color: #008080; color: white
+8,2024-06-06 00:00:00,"Não foi a escola, teve vomito, provavél reação ao med. Anita.",Medico,background-color: #800080; color: white
+9,2024-04-01 00:00:00,"Está tomando Risperidona, 0.25ml, receitado pelo Dr. Lucas",Medico,background-color: #800080; color: white
+10,2024-05-01 00:00:00,"Está tomando Risperidona, 0.25ml, receitado pelo Dr. Lucas",Medico,background-color: #800080; color: white
+11,2024-06-01 00:00:00,"Está tomando Risperidona, 0.25ml, receitado pelo Dr. Lucas",Medico,background-color: #800080; color: white

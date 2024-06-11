@@ -109,7 +109,7 @@ with st.container(height=250):
             st.write(str(df.iloc[i]))
 
 # inserir timeline
-with st.container():
+with st.container(height=900):
     st.subheader("Timeline de atividades")
     timeline(df)
 

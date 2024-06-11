@@ -86,14 +86,14 @@ def timeline(df):
         content_with_breaks = '<br>'.join(pairs)
 
         # Contar a quantidade de quebras de linha
-        line_count = len(pairs) + 1.5 # +1 para a primeira linha
+        line_count = len(pairs)  # +1 para a primeira linha
 
         # Definir a altura da div com base na quantidade de linhas
         height = line_count * 20  # Supondo que cada linha tenha 20px de altura
 
-        item['content'] = f"<div style='width:150px; height:{height}px; word-wrap: break-word;'>{content_with_breaks}</div>"
+        item['content'] = f"<div style='width:150px; height:{height}px; word-wrap: break-word; font-size: 11px;'>{content_with_breaks}</div>"
     # Exibir a linha do tempo de atividades no Streamlit
-    timeline = st_timeline(items, groups=[], options={}, height="500px")
+    timeline = st_timeline(items, groups=[], options={}, height="700px")
 
     st.write("Item Selecionado:")
     st.write(timeline)
